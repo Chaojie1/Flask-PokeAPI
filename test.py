@@ -7,13 +7,13 @@ app = Flask(__name__)
 def index():
     cats = []
     response = requests.get("https://api.thecatapi.com/v1/images/search?limit=10").json()
-    print(response)
+
     for i in response:
-        cats.append({'imageurl': i['url']})
-        print(i)
+        cats.append({'imageurl': i['url'],'id':i['id']})
     return render_template("home.html", cats=cats)
 @app.route("/cat/<string:id>")
-def cat(id):
+def thiscat(id):
+    print(id)
     response = requests.get(f"https://api.thecatapi.com/v1/images/{id}")
     data = response.json()
     cats = [{'imageurl': data['url']}]
