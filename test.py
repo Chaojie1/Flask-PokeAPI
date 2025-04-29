@@ -2,21 +2,26 @@ from flask import Flask, render_template
 import requests
 
 app = Flask(__name__)
-
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36'
+}
 @app.route("/")
 def index():
-    cats = []
-    response = requests.get("https://api.thecatapi.com/v1/images/search?limit=10").json()
+    streamers = []
+    response = requests.get("https://api.chess.com/pub/streamers",headers=headers)
+    print(response)
+    if response.status_code != 200:
+        return f"API error: {response.status_code}"
 
-    for i in response:
-        cats.append({'imageurl': i['url'],'id':i['id']})
-    return render_template("home.html", cats=cats)
-@app.route("/cat/<string:id>")
-def thiscat(id):
-    print(id)
-    response = requests.get(f"https://api.thecatapi.com/v1/images/{id}")
     data = response.json()
-    cats = [{'imageurl': data['url']}]
-    return render_template("home.html", cats=cats)
+
+    for i in data["streamers"]:
+        streamer = {'avatar': i['avatar'], 'user': i['username'],'live':None}
+        if i["is_live"] == True:
+            streamer['live'] = "Live"
+        else:
+            streamer['live'] = "Offline"
+        streamers.append(streamer)
+    return render_template("home.html", streamers=streamers)
 if __name__ == '__main__':
     app.run(debug=True)
