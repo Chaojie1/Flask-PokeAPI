@@ -35,9 +35,9 @@
   </style>
 </head>
 <body>
-  <div class="container mt-4">
+  <div class="container-fluid">
     <div class="row">
-      {% for i in streamers %}
+      {% for i in streamers.values() %}
         <div class="col-6 col-sm-4 col-md-3 col-lg-2 mb-3">
           <div class="card text-center">
             <img src="{{ i.avatar }}" class="card-img-top rounded-circle p-2 avatar-small" alt="Avatar of {{ i.user }}">
@@ -48,7 +48,7 @@
                       style="background-color: {{ 'green' if i.live == 'Live' else 'red' }};">
                 </span>
               </h6>
-              <a href="{{ i.link }}" target="_blank" class="btn btn-sm btn-primary btn-visit">Visit</a>
+              <a href="{{ url_for('stre',id=i.user) }}" target="_blank" class="btn btn-sm btn-primary btn-visit">Visit</a>
             </div>
           </div>
         </div>
