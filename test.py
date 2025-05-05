@@ -24,11 +24,13 @@ def stre(id):
     response = requests.get("https://api.chess.com/pub/streamers",headers=headers)
     data = response.json()
     streamer = None
+    available = True
     for i in data["streamers"]:
         if i["username"] == id:
             streamer = i
             break
-    print(streamer)
-    return render_template("specific.html", streamer=streamer)
+    if streamer == None:
+        available = False
+    return render_template("specific.html", streamer=streamer, realuser=available)
 if __name__ == '__main__':
     app.run(debug=True)
