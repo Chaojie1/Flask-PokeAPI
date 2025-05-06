@@ -22,7 +22,15 @@ def index():
 @app.route("/streamer/<id>")
 def stre(id):
     response = requests.get("https://api.chess.com/pub/streamers",headers=headers)
-    data = response.json()
+    morereponse = requests.get(f"https://api.chess.com/pub/player/{id}",headers=headers)
+    if morereponse.status_code != 200:
+        return f"Failed to fetch player data for {id}", 404
+    
+    try:
+        data = response.json()
+        moredata = morereponse.json()
+    except ValueError:
+        return "Invalid JSON response from API", 500
     streamer = None
     available = True
     for i in data["streamers"]:
@@ -31,6 +39,6 @@ def stre(id):
             break
     if streamer == None:
         available = False
-    return render_template("specific.html", streamer=streamer, realuser=available)
+    return render_template("specific.html", streamer=streamer, realuser=available,moredata=moredata)
 if __name__ == '__main__':
     app.run(debug=True)
